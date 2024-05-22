@@ -1,0 +1,44 @@
+[tool.poetry]
+authors = ["Lune Climate <eng@lune.co>"]
+license = "MIT"
+description = ''
+name = 'spreadsheet-offset-tool'
+version = '0.1.0'
+
+[tool.poetry.scripts]
+spreadsheet-offset-tool = 'spreadsheet_offset_tool:main'
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.2"
+pydantic = "^2.7.1"
+mypy = "^1.10.0"
+
+[tool.poetry.group.dev.dependencies]
+
+# As of 2024-05-23 we need a development version of Mypy in order to
+# be able to use https://peps.python.org/pep-0695/ features.
+#
+# https://github.com/python/mypy/issues/15238#issuecomment-2117904345
+mypy = { git = "https://github.com/python/mypy.git" } 
+
+ruff = "^0.4.4"
+types-requests = "^2.32.0.20240523"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+strict = true
+
+# PEP 695 support, not quite complete yet and behind a feature flag.
+#
+# https://github.com/python/mypy/issues/15238#issuecomment-2117904345
+enable_incomplete_feature = ["NewGenericSyntax"]
+
+[tool.ruff.lint]
+extend-select = [
+    # Import sorting, not enabled by default
+    "I",
+]
