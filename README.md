@@ -10,7 +10,7 @@ The tool goes through the provided CSV file and for every row:
 * It ensures that an appropriate [client account](https://docs.lune.co/key-concepts/client-accounts)
   exists and it has its [sustainability page](https://docs.lune.co/guides/share-your-impact)
   configured with your logo on it
-* Offets 2 kg of CO2 on a portfolio following Oxford Offsetting Principles
+* Places an order on a portfolio following Oxford Offsetting Principles
 * Presents the order id and the sustainability page URL in the same CSV file as new columns
 
 The offsets will be retired under the name of your choice (common for all orders)
@@ -26,6 +26,8 @@ no leading or trailing whitespace allowed):
 
 * `Timestamp` – used to disambiguate records
 * `Certificate recipient's name` – the name of your customer
+* `Offset quantity kg` – the amount of CO2 to offset, if the column is missing or empty for
+  a given row we default to 2 kg
 
 If the same `Certificate recipient's name` name appears multiple times in the input CSV
 file it is assumed to refer to the same person.

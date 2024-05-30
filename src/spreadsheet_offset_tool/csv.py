@@ -5,10 +5,11 @@ from typing import TextIO
 
 @dataclass
 class CsvRow:
-    # We extract these two values when parsing CSV so that we can keep using them later
+    # We extract these values when parsing CSV so that we can keep using them later
     # in a type-safe way.
     timestamp: str
     recipients_name: str
+    quantity_kg: float | None
 
     # These will be empty in input rows but eventually filled in output rows.
     order_id: str
@@ -67,7 +68,7 @@ def _parse_csv(
             raise AssertionError(f"Could not find an expected CSV field: {e}")
         order_id = r.get("lune_order_id", "")
         sustainability_page_url = r.get("lune_sustainability_page_url", "")
-
+        quantity_kg_text = r.get("Offset quantity kg")
         if order_id != "" and sustainability_page_url == "":
             raise AssertionError(f"{order_id=} present but no sustainability page URL")
 
@@ -75,6 +76,7 @@ def _parse_csv(
             CsvRow(
                 timestamp=timestamp,
                 recipients_name=recipients_name,
+                quantity_kg=float(quantity_kg_text) if quantity_kg_text else None,
                 order_id=order_id,
                 sustainability_page_url=sustainability_page_url,
                 values=r,

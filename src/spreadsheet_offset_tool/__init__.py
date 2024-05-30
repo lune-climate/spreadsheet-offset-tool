@@ -271,7 +271,7 @@ This will allow you to interact with live accounts and place real, live orders.
         order_response = client.create_order_by_mass(
             account_id=account_state.account.id,
             idempotency_key=idempotency_key,
-            mass_grams=2_000,
+            mass_grams=int((row.quantity_kg or 2.0) * 1000.0),
             bundle_selection=portfolio.bundle_selection,
         )
         if (
