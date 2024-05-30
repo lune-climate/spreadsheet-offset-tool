@@ -147,7 +147,7 @@ def ensure_client_accounts(
             print(f"Uploading logo for {name=} {account.id=}...")
             client.update_client_account_logo(
                 account_id=account.id, logo_path=logo_file
-            ).expect_success().data
+            ).expect_success()
             print("Done.")
 
         # 3. The sustainability page configuration
