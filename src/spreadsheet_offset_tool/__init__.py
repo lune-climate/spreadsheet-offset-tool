@@ -9,7 +9,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from spreadsheet_offset_tool.csv import load_csvs, save_csv
+from spreadsheet_offset_tool.csv import load_csv, save_csv
 from spreadsheet_offset_tool.lune_client import (
     Account,
     ApiResponseError,
@@ -35,12 +35,9 @@ parser = CustomArgumentParser(
     description="Offset emissions based on spreadsheet contents",
 )
 parser.add_argument(
-    "-i", "--input-file", help="The input CSV spreadsheet file", type=str, required=True
-)
-parser.add_argument(
-    "-o",
-    "--output-file",
-    help="The output path where the tool will store thre results as a CSV spreadsheet",
+    "-i",
+    "--input-file",
+    help="The CSV spreadsheet file to read data from and write back to",
     type=str,
     required=True,
 )
@@ -68,7 +65,6 @@ class Args:
     """A type-safe structure to hold the application arguments."""
 
     input_file: str
-    output_file: str
     logo_file: str
     allow_live: bool
     beneficiary: str
@@ -87,7 +83,6 @@ def get_args() -> Args:
 
     return Args(
         input_file=parsed.input_file,
-        output_file=parsed.output_file,
         logo_file=parsed.logo_file,
         allow_live=bool(parsed.allow_live),
         beneficiary=parsed.beneficiary,
@@ -240,7 +235,7 @@ This will allow you to interact with live accounts and place real, live orders.
     # Dump some debugging information
     print(f"The main account: {main_account}")
 
-    rows = load_csvs(input_file=args.input_file, output_file=args.output_file)
+    rows = load_csv(input_file=args.input_file)
     accounts = ensure_client_accounts(
         client=client,
         names={r.recipients_name for r in rows},
@@ -305,7 +300,7 @@ This will allow you to interact with live accounts and place real, live orders.
         # The tool is implemented so that one should be able to run it again and it should
         # do the right thing even without past progress available but it'd have to do
         # some redundant work. Let's try to avoid that.
-        save_csv(args.output_file, rows)
+        save_csv(args.input_file, rows)
 
     print()
-    print(f"Success! Find your results in {args.output_file}.")
+    print(f"Success! Find your results in {args.input_file}.")

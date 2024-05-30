@@ -1,7 +1,6 @@
 import csv
-import os
 from dataclasses import dataclass
-from typing import Literal, TextIO
+from typing import TextIO
 
 
 @dataclass
@@ -29,43 +28,13 @@ class CsvRow:
             )
 
 
-def load_csvs(*, input_file: str, output_file: str) -> list[CsvRow]:
-    """Loads the CSV rows from provided files.
+def load_csv(*, input_file: str) -> list[CsvRow]:
+    """Loads the CSV rows from provided file.
 
     input_file is read unconditionally and has to exist.
-
-    If output_file exists we do the following:
-
-    * Load the rows from there
-    * Verify that the rows are consistent with the rows in input_file
-    * Actually use the output_file values when returning from this function
-
-    As the data from output_file takes precedence the client code can store partial results
-    in output_file as we can restart/retry at any point.
     """
     with open(input_file) as f:
-        input_rows = _parse_csv(f, mode="input")
-        to_return = input_rows
-
-    if os.path.isfile(output_file):
-        with open(output_file) as f:
-            output_rows = _parse_csv(f, mode="output")
-
-        assert (
-            len(input_rows) == len(output_rows)
-        ), f"Inconsistency: {input_file} and {output_file} have different number of rows"
-        for index, (i, o) in enumerate(zip(input_rows, output_rows)):
-            cleaned_o = {
-                k: v
-                for (k, v) in o.values.items()
-                if k not in ["lune_order_id", "lune_sustainability_page_url"]
-            }
-            if i.values != cleaned_o:
-                raise AssertionError(
-                    f"Row {index} is inconsistent between {input_file} and {output_file}"
-                )
-        to_return = output_rows
-    return to_return
+        return _parse_csv(f)
 
 
 def save_csv(output_file: str, rows: list[CsvRow]) -> None:
@@ -86,30 +55,21 @@ def save_csv(output_file: str, rows: list[CsvRow]) -> None:
 
 
 def _parse_csv(
-    f: TextIO, *, mode: Literal["input"] | Literal["output"]
+    f: TextIO,
 ) -> list[CsvRow]:
     reader = csv.DictReader(f)
     results: list[CsvRow] = []
     for r in reader:
-        order_id = ""
-        sustainability_page_url = ""
-
         try:
             timestamp = r["Timestamp"]
             recipients_name = r["Certificate recipient's name"]
-
-            if mode == "output":
-                order_id = r["lune_order_id"]
-                sustainability_page_url = r["lune_sustainability_page_url"]
         except KeyError as e:
             raise AssertionError(f"Could not find an expected CSV field: {e}")
+        order_id = r.get("lune_order_id", "")
+        sustainability_page_url = r.get("lune_sustainability_page_url", "")
 
         if order_id != "" and sustainability_page_url == "":
             raise AssertionError(f"{order_id=} present but no sustainability page URL")
-
-        if mode == "input":
-            assert "lune_order_id" not in r, r
-            assert "lune_sustainability_page_url" not in r, r
 
         results.append(
             CsvRow(

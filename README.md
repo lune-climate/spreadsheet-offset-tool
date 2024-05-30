@@ -11,7 +11,7 @@ The tool goes through the provided CSV file and for every row:
   exists and it has its [sustainability page](https://docs.lune.co/guides/share-your-impact)
   configured with your logo on it
 * Offets 2 kg of CO2 on a portfolio following Oxford Offsetting Principles
-* Presents the order id and the sustainability page URL in the output CSV file
+* Presents the order id and the sustainability page URL in the same CSV file as new columns
 
 The offsets will be retired under the name of your choice (common for all orders)
 but the sustainability pages will display the names of your customers (one name
@@ -67,7 +67,6 @@ Assuming
 
 * Your name is `ACME`
 * You have the input data in `input.csv`
-* You want the output in `output.csv`
 * Your company's logo is placed in `logo.png`
 
 this is how you'll want to run it:
@@ -76,20 +75,18 @@ this is how you'll want to run it:
 # Only test API keys allowed here
 poetry run spreadsheet-offset-tool \
     -i input.csv \
-    -o output.csv \
     -b "ACME's customers" \
     -l logo.png
 
 # Live API key spermitted
 poetry run spreadsheet-offset-tool \
     -i input.csv \
-    -o output.csv \
     -b "ACME's customers" \
     -l logo.png \
     --allow-live
 ```
 
-The tool will update the output CSV file as it progresses and if it's interrupted it can be
+The tool will update the input CSV file as it progresses and if it's interrupted it can be
 safely restarted with the same parameters.
 
 It is advised to test things with a test API key to make sure everything works as expected.
@@ -97,8 +94,8 @@ It is advised to test things with a test API key to make sure everything works a
 ### Full usage details
 
 ```
-% poetry run spreadsheet-offset-tool --help                                                   
-usage: spreadsheet-offset-tool [-h] -i INPUT_FILE -o OUTPUT_FILE [-l LOGO_FILE] -b BENEFICIARY [--allow-live]
+% poetry run spreadsheet-offset-tool --help
+usage: spreadsheet-offset-tool [-h] -i INPUT_FILE [-l LOGO_FILE] -b BENEFICIARY [--allow-live]
 
 Offset emissions based on spreadsheet contents
 
@@ -106,8 +103,6 @@ options:
   -h, --help            show this help message and exit
   -i INPUT_FILE, --input-file INPUT_FILE
                         The input CSV spreadsheet file
-  -o OUTPUT_FILE, --output-file OUTPUT_FILE
-                        The output path where the tool will store thre results as a CSV spreadsheet
   -l LOGO_FILE, --logo-file LOGO_FILE
                         The path to a file with the company logo (.jpg, .jpeg or .png)
   -b BENEFICIARY, --beneficiary BENEFICIARY
