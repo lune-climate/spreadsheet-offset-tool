@@ -141,9 +141,15 @@ def ensure_client_accounts(
             print("Done.")
 
         # 2. The logo
-        if logo_file:
-            # The Lune API doesn't currently return the logo URLs if they're set,
-            # so we have to upload the logo just in case.
+        #
+        # The "not account.logo" part of this condition assumes that if the account has
+        # a logo it's the right logo and we don't need to overwrite it. We currently have
+        # no good way of making sure it's the right one without actually downloading it
+        # and comparing the images.
+        #
+        # We could think of some kind of a "overwrite logos" commnd line switch if
+        # that becomes necessary.
+        if logo_file and not account.logo:
             print(f"Uploading logo for {name=} {account.id=}...")
             client.update_client_account_logo(
                 account_id=account.id, logo_path=logo_file
