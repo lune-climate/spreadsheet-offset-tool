@@ -238,7 +238,7 @@ This will allow you to interact with live accounts and place real, live orders.
     rows = load_csv(input_file=args.input_file)
     accounts = ensure_client_accounts(
         client=client,
-        names={r.recipients_name for r in rows},
+        names={r.account_name() for r in rows},
         logo_file=args.logo_file,
         beneficiary=args.beneficiary,
         currency=main_account.currency,
@@ -250,7 +250,7 @@ This will allow you to interact with live accounts and place real, live orders.
 
     for index, row in enumerate(rows):
         print(f"Processing row {index + 1} out of {len(rows)}...")
-        account_state = accounts[row.recipients_name]
+        account_state = accounts[row.account_name()]
         row.sustainability_page_url = account_state.sustainability_page_url()
 
         if row.order_id:

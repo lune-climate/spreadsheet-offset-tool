@@ -26,11 +26,12 @@ no leading or trailing whitespace allowed):
 
 * `Timestamp` – used to disambiguate records
 * `Certificate recipient's name` – the name of your customer
+* `Email address` – the email address of the customer
 * `Offset quantity kg` – the amount of CO2 to offset, if the column is missing or empty for
   a given row we default to 2 kg
 
-If the same `Certificate recipient's name` name appears multiple times in the input CSV
-file it is assumed to refer to the same person.
+If the same `Certificate recipient's name` and `Email address` combination appears
+multiple times in the input CSV file it is assumed to refer to the same person.
 
 Other fields are permitted as preserved in the output CSV file.
 
